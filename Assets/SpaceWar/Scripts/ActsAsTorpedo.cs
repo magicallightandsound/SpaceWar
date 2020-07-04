@@ -111,10 +111,10 @@ public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
         {
             case Weapon.Status.Dud:
                 return;
-                break;
+
             case Weapon.Status.Disarmed:
                 return;
-                break;
+
             case Weapon.Status.Armed:
                 {
                     // Torpedo vs Torpedo destroy each other
@@ -126,10 +126,10 @@ public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
                 break;
             case Weapon.Status.Destroyed:
                 return;
-                break;
+
             case Weapon.Status.OKToDestroy:
                 return;
-                break;
+
             default:
                 break;
         }
@@ -173,7 +173,7 @@ public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
         ParticleSystem particleSystem = this.explosionGameObject.GetComponent<ParticleSystem>();
         particleSystem.Play();
         this.explosionGameObject.SetActive(true);
-        Destroy(explosionGameObject, particleSystem.duration);
+        Destroy(explosionGameObject, particleSystem.main.duration);
     }
 
     private void FixedUpdate()

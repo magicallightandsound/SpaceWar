@@ -62,8 +62,8 @@ namespace MagicalLightAndSound
 
         public class Targets
         {
-            private List<Targetable> targets = new List<Targetable>();
-            public Targets(List<Targetable> targets)
+            private List<Vehicle> targets = new List<Vehicle>();
+            public Targets(List<Vehicle> targets)
             {
                 this.targets = targets;
             }
@@ -90,6 +90,7 @@ namespace MagicalLightAndSound
         {
             void ConfigureWeapon(Vector3 targetVector, Dictionary<string, string> parameters);
             void ConfigureDud(Vector3 targetVector);
+            void ConfigureSelfDestruct(Vector3 targetVector);
         }
 
         public struct Weapon : IDamage
@@ -128,7 +129,6 @@ namespace MagicalLightAndSound
 
                                 return go;
                             }
-                            break;
                         default:
                             {
                                 GameObject go = GameObject.Instantiate(Resources.Load("weapons/Weapon")) as GameObject;
@@ -139,7 +139,6 @@ namespace MagicalLightAndSound
 
                                 return go;
                             }
-                            break;
                     }
                 }
             }
@@ -175,7 +174,13 @@ namespace MagicalLightAndSound
             }
         }
 
-        public struct Targetable : IDestructible
+        public interface IVehicle
+        {
+            void ConfigureVehicle(Vector3 targetVector);
+            void navigateTo(Vector3 targetVector);
+        }
+
+        public struct Vehicle : IDestructible
         {
             public enum Status
             {
@@ -192,7 +197,36 @@ namespace MagicalLightAndSound
             {
                 SpaceShip
             }
+
             private Type type;
+
+
+            public GameObject gameObject
+            {
+                get
+                {
+                    switch (type)
+                    {
+                        case Type.SpaceShip:
+                            {
+                                GameObject go = GameObject.Instantiate(Resources.Load("Vehicles/SpaceShip")) as GameObject;
+                                go.SetActive(false);
+
+                                ActsAsSpaceShip actsAsSpaceShip = go.GetComponent<ActsAsSpaceShip>();
+                                actsAsSpaceShip.spaceShip.type = this.type;
+                                actsAsSpaceShip.spaceShip.status = this.status;
+
+                                return go;
+                            }
+                        default:
+                            {
+                                GameObject go = GameObject.Instantiate(Resources.Load("Vehicles/Vehicle")) as GameObject;
+                                go.SetActive(false);
+                                return go;
+                            }
+                    }
+                }
+            }
 
             public int ArmorClass
             {
@@ -210,9 +244,14 @@ namespace MagicalLightAndSound
                 }
             }
 
+            public override string ToString()
+            {
+                return type.ToString();
+            }
+
             private int hitPoints;
 
-            public Targetable(Targetable.Type type, Targetable.Status status, int hp)
+            public Vehicle(Vehicle.Type type, Vehicle.Status status, int hp)
             {
                 this.hitPoints = hp;
                 this.type = type;

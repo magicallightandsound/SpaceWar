@@ -22,152 +22,183 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.MagicLeap;
 
 using MagicalLightAndSound.ParticleSystem;
 using MagicalLightAndSound.CombatSystem;
 using MagicalLightAndSound.PhysicsSystem;
 
-[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(Rigidbody))]
 
-public class ActsAsSpaceShip : MonoBehaviour, IMovableBehavior
+public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IMovableBehavior
 {
-    public int HitPoints = 100;
-    public float thrust = 0;
+    public Vector3 targetPosition = Vector3.zero;
     public AnimationCurve animationCurve = new AnimationCurve();
+
+    public float thrust = 1.0f;
     public Movable.Type movableType;
 
-    private Targetable spaceShip;
-    private Movable motion;
-    private float animationTime = 0;
-
     private Rigidbody rigidBody;
-    private readonly string torpedoTag = Weapon.Type.Torpedo.ToString();
-    private readonly string spaceShipTag = Targetable.Type.SpaceShip.ToString();
-
-    private ParticleSystem spaceShipExplosionParticles;
-    private ParticleSystem spaceShipExhaustParticles;
-
+    private ParticleSystem exhaustParticles;
     private BoxCollider boxCollider;
+    private GameObject particleSystemGameObject;
+    private GameObject explosionGameObject;
+
+    [HideInInspector]
+    public Vehicle spaceShip;
+
+    [HideInInspector]
+    public Movable motion;
+
+    private float animationTime = 0;
 
     Rigidbody IMovableBehavior.rigidbody
     {
-        get
-        {
-            return rigidBody;
-        }
+        get { return rigidBody; }
     }
 
     private void Awake()
     {
-        this.boxCollider = GetComponent<BoxCollider>();
         this.rigidBody = GetComponent<Rigidbody>();
 
-        Explosion spaceShipExplosion = new Explosion(Explosion.Type.Large);
-        GameObject goExplosionParticleSystem = spaceShipExplosion.particleSystem;
-        this.spaceShipExplosionParticles = goExplosionParticleSystem.GetComponent<ParticleSystem>();
-        this.spaceShipExplosionParticles.transform.parent = this.transform;
-
-        Exhaust spaceshipExhaust = new Exhaust(Exhaust.Type.Spaceship);
-        GameObject goExhaustParticleSystem = spaceshipExhaust.particleSystem;
-        this.spaceShipExhaustParticles = goExhaustParticleSystem.GetComponent<ParticleSystem>();
-        this.spaceShipExhaustParticles.transform.parent = this.transform;
-    }
-
-
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        this.spaceShip = new Targetable(Targetable.Type.SpaceShip, Targetable.Status.Healthy, HitPoints);
-
-        this.motion = new Movable(
+        this.motion = new MagicalLightAndSound.PhysicsSystem.Movable(
             this,
-            Movable.Type.LinearMotion,
-            Vector3.zero,
-            Vector3.zero,
+            movableType,
+            this.transform.position,
+            targetPosition,
             Movable.Status.InActive,
             thrust,
             animationCurve);
 
-        boxCollider.isTrigger = true;
-
-        this.rigidBody.useGravity = false;
-        this.rigidBody.isKinematic = false;
+        this.spaceShip = new Vehicle(Vehicle.Type.SpaceShip, Vehicle.Status.Inactive, 100);
+         
+        Exhaust torpedoExhaust = new Exhaust(Exhaust.Type.Torpedo);
+        this.particleSystemGameObject = torpedoExhaust.particleSystem;
+        this.exhaustParticles = particleSystemGameObject.GetComponent<ParticleSystem>();
+        this.exhaustParticles.transform.parent = this.transform;
+        Debug.Assert(this.exhaustParticles != null, "exhaustParticles should not be null");
     }
 
-    // Update is called once per frame
-    void Update()
+    // Start is called before the first frame update
+    void Start()
+    {
+        this.rigidBody.useGravity = false;
+        this.rigidBody.isKinematic = false;
+
+        ///
+        /// Assign a tag to the box collider, therefore making this game object
+        /// able to be recognized as a Ship when a collision occurs
+        ///
+        this.boxCollider = GetComponent<BoxCollider>();
+        this.boxCollider.tag = this.spaceShip.ToString();
+        this.boxCollider.isTrigger = true;
+
+    }
+
+    private void OnEnable()
+    {
+        this.exhaustParticles.Play();
+    }
+
+    private void OnDisable()
+    {
+        this.exhaustParticles.Stop();
+    }
+
+    private void OnTriggerEnter(Collider other)
     {
         switch (spaceShip.status)
         {
-            case Targetable.Status.Healthy:
-
+            case Vehicle.Status.Healthy:
                 break;
-            case Targetable.Status.Damaged:
-
+            case Vehicle.Status.Damaged:
                 break;
-            case Targetable.Status.OKToDestroy:
+            case Vehicle.Status.Active:
                 {
-                    ParticleSystem exp = spaceShipExplosionParticles.GetComponent<ParticleSystem>();
-                    exp.Play();
-
-                    spaceShip.status = Targetable.Status.Destroyed;
-                    motion.status = Movable.Status.InActive;
-
-                    Destroy(gameObject, exp.main.duration);
+                    // Ship vs Ship destroy each other
+                    if (other.tag == this.boxCollider.tag)
+                    {
+                        this.spaceShip.status = Vehicle.Status.OKToDestroy;
+                    }
                 }
                 break;
-            case Targetable.Status.Destroyed:
+            case Vehicle.Status.Inactive:
+                break;
+            case Vehicle.Status.OKToDestroy:
+                break;
+            case Vehicle.Status.Destroyed:
                 break;
             default:
                 break;
         }
+    }
 
-        
+    // Update is called once per frame
+    public virtual void Update()
+    {
+        switch (spaceShip.status)
+        {
+            case Vehicle.Status.Healthy:
+                break;
+            case Vehicle.Status.Damaged:
+                break;
+            case Vehicle.Status.Active:
+                break;
+            case Vehicle.Status.Inactive:
+                break;
+            case Vehicle.Status.OKToDestroy:
+                {
+                    this.spaceShip.status = Vehicle.Status.Inactive;
+                    displayExplosion();
+                    this.gameObject.SetActive(false);
+                    this.gameObject.transform.position = Vector3.zero;
+
+                    spaceShip.status = Vehicle.Status.Destroyed;
+                }
+                break;
+            case Vehicle.Status.Destroyed:
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void displayExplosion()
+    {
+        Explosion explosion = ActsAsObjectPool.explosionPool.prototype;
+        this.explosionGameObject = explosion.particleSystem;
+        this.explosionGameObject.transform.position = this.transform.position;
+        ParticleSystem particleSystem = this.explosionGameObject.GetComponent<ParticleSystem>();
+        particleSystem.Play();
+        this.explosionGameObject.SetActive(true);
+        Destroy(explosionGameObject, particleSystem.main.duration);
     }
 
     private void FixedUpdate()
     {
-        switch (this.motion.status)
+        switch (motion.status)
         {
             case Movable.Status.Active:
                 {
-                    switch (this.motion.type)
+                    switch (motion.type)
                     {
                         case Movable.Type.LinearMotion:
                             {
                                 motion.Perform(animationTime);
                                 animationTime += Time.fixedDeltaTime;
-                                Debug.Log("animation time =" + animationTime.ToString());
-
-                                if (animationTime >= 1.0f)
-                                {
-                                    this.motion.status = Movable.Status.InActive;
-                                    animationTime = 0;
-                                }
+                                Debug.Log("LinearMotion animation time =" + animationTime.ToString());
                             }
                             break;
                         case Movable.Type.Teleport:
                             {
                                 motion.Perform(Time.fixedDeltaTime);
-                                this.motion.status = Movable.Status.InActive;
-                                animationTime = 0;
                             }
                             break;
                         case Movable.Type.Newtonian:
                             {
                                 motion.Perform(animationTime);
                                 animationTime += Time.fixedDeltaTime;
-                                Debug.Log("animation time =" + animationTime.ToString());
-
-                                if (animationTime >= 1.0f)
-                                {
-                                    this.motion.status = Movable.Status.InActive;
-                                    animationTime = 0;
-                                }
+                                Debug.Log("Newtonian animation time =" + animationTime.ToString());
                             }
                             break;
                         default:
@@ -176,46 +207,37 @@ public class ActsAsSpaceShip : MonoBehaviour, IMovableBehavior
                 }
                 break;
             case Movable.Status.InActive:
-                // Do not hide the Spaceship
+                {
+
+                }
                 break;
             default:
                 break;
         }
     }
 
-
-    private void OnTriggerEnter(Collider other)
+    public void ConfigureVehicle(Vector3 targetVector)
     {
-        if (other.tag == torpedoTag)
-        {
-            ActsAsTorpedo actsAsTorpedo = other.GetComponent<ActsAsTorpedo>();
-            actsAsTorpedo.torpedo.ApplyDamage(spaceShip);
-            actsAsTorpedo.torpedo.status = Weapon.Status.OKToDestroy;
-            return;
-        }
-
-        if (other.tag == spaceShipTag)
-        {
-            ActsAsSpaceShip actsAsSpaceShip = other.GetComponent<ActsAsSpaceShip>();
-            actsAsSpaceShip.spaceShip.status = Targetable.Status.OKToDestroy;
-
-            this.spaceShip.status = Targetable.Status.OKToDestroy;
-
-        }
+        this.targetPosition = targetVector;
+        this.animationTime = 0;
+        this.motion.source = transform.position;
+        this.motion.target = this.targetPosition;
+        this.motion.type = this.movableType;
+        this.spaceShip.status = Vehicle.Status.Active;
+        this.motion.status = Movable.Status.Active;
+        this.transform.LookAt(targetVector);
     }
 
-
-    public void navigateTo(Vector3 targetPosition)
+    public void navigateTo(Vector3 targetVector)
     {
-        this.motion.source = this.transform.position;
-        this.motion.target = targetPosition;
-        this.motion.type = this.movableType;
-        this.motion.thrust = this.thrust;
+        this.targetPosition = targetVector;
         this.animationTime = 0;
-        this.spaceShip.status = Targetable.Status.Healthy;
+        this.motion.source = transform.position;
+        this.motion.target = this.targetPosition;
+        this.motion.type = this.movableType;
+        this.spaceShip.status = Vehicle.Status.Active;
         this.motion.status = Movable.Status.Active;
-        this.spaceShipExhaustParticles.Play();
-
+        this.transform.LookAt(targetVector);
     }
 }
 
