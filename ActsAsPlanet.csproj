@@ -71,6 +71,7 @@
     <Compile Include="Assets\SpaceWar\Scripts\CombatSystem.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\ParticleSystem.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\Physics.cs" />
+    <Compile Include="Assets\SpaceWar\Scripts\PropSystem.cs" />
     <None Include="Assets\SpaceWar\Scripts\ActsAsPlanet.asmdef" />
     <Reference Include="UnityEngine.XR.MagicLeap">
       <HintPath>C:/Users/Rodney/Documents/MLProjects/SpaceWar.git/trunk/Library/ScriptAssemblies/UnityEngine.XR.MagicLeap.dll</HintPath>

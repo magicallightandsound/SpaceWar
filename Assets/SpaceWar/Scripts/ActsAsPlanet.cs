@@ -25,19 +25,33 @@ using UnityEngine;
 using UnityEngine.XR.MagicLeap;
 
 using MagicalLightAndSound.PhysicsSystem;
+using MagicalLightAndSound.PropSystem;
 
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(SphereCollider))]
 
 public class ActsAsPlanet : MonoBehaviour, IMovableBehavior
 {
     public float force = 0.33f;
     public Rigidbody rigidBody;
+    public SphereCollider sphereCollider;
 
-    Rotatable rotation;
+    [HideInInspector]
+    public Rotatable rotation;
+
+    [HideInInspector]
+    public Obstacle planet;
+
 
     Rigidbody IMovableBehavior.rigidbody
     {
         get { return rigidBody; }
+    }
+
+    private void Awake()
+    {
+        this.rotation = new Rotatable(this, new Vector3(0, 1, 0), force);
+        this.planet = new Obstacle(Obstacle.Type.Planet);
     }
 
     // Start is called before the first frame update
@@ -47,7 +61,7 @@ public class ActsAsPlanet : MonoBehaviour, IMovableBehavior
         this.rigidBody.useGravity = false;
         this.rigidBody.angularDrag = 0;
 
-        this.rotation = new Rotatable(this, new Vector3(0, 1, 0), force);
+        
     }
 
     // Update is called once per frame
