@@ -22,43 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.MagicLeap;
 
-using MagicalLightAndSound.PhysicsSystem;
+using MagicalLightAndSound.CombatSystem;
+using MagicalLightAndSound.ParticleSystem;
 
-[RequireComponent(typeof(Rigidbody))]
-
-public class ActsAsPlanet : MonoBehaviour, IMovableBehavior
+public class ActsAsObjectPool : MonoBehaviour
 {
-    public float force = 0.33f;
-    public Rigidbody rigidBody;
+    [HideInInspector]
+    public static WeaponsPool weaponsPool;
 
-    Rotatable rotation;
+    [HideInInspector]
+    public static ExplosionPool explosionPool;
 
-    Rigidbody IMovableBehavior.rigidbody
+    private void Awake()
     {
-        get { return rigidBody; }
+        weaponsPool = new WeaponsPool(new Weapon(Weapon.Type.Torpedo, Weapon.Status.Disarmed), 3);
+        explosionPool = new ExplosionPool(new Explosion(Explosion.Type.Large), 3);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        this.rigidBody = GetComponent<Rigidbody>();
-        this.rigidBody.useGravity = false;
-        this.rigidBody.angularDrag = 0;
-
-        this.rotation = new Rotatable(this, new Vector3(0, 1, 0), force);
+        
     }
 
     // Update is called once per frame
     void Update()
     {
+        
     }
-
-    private void FixedUpdate()
-    {
-        this.rotation.Perform(force);
-    }
-
 }
-

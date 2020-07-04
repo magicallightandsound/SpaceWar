@@ -24,7 +24,7 @@ namespace Tests
  
             yield return test;
 
-            Assert.IsTrue(test.component.torpedo.status == MagicalLightAndSound.CombatSystem.Weapon.Status.InActive);
+            Assert.IsTrue(test.component.torpedo.status == MagicalLightAndSound.CombatSystem.Weapon.Status.Disarmed);
             Assert.IsTrue(test.component.motion.status == MagicalLightAndSound.PhysicsSystem.Movable.Status.InActive);
 
             // Use the Assert class to test conditions.
@@ -37,12 +37,12 @@ namespace Tests
         {
             MonoBehaviourTest<ActsAsTorpedoTest> test = new MonoBehaviourTest<ActsAsTorpedoTest>();
 
-            test.component.DeployDud(Vector3.one * 10);
+            test.component.ConfigureDud(Vector3.one * 10);
 
             yield return test;
 
  
-            Assert.IsTrue(test.component.torpedo.status == MagicalLightAndSound.CombatSystem.Weapon.Status.InActive);
+            Assert.IsTrue(test.component.torpedo.status == MagicalLightAndSound.CombatSystem.Weapon.Status.Disarmed);
             Assert.IsTrue(test.component.motion.status == MagicalLightAndSound.PhysicsSystem.Movable.Status.InActive);
             Assert.IsTrue(Vector3.Distance(test.component.transform.position, Vector3.one * 10) > 10.0f);
 

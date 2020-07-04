@@ -15,6 +15,10 @@ You will play the tactical officer of a ship that has been sent to defend an out
 
 ## Contribute
 
+### Caution:
+
+The source code is still alpha-quality and is a work in progress.
+
 ### Requirements
 
 Magic Leap One or better
@@ -28,7 +32,7 @@ Magic Leap One or better
 ##### Environment:
 
 1. You should have a working version of The Lab and have installed the necessary Packages using the Package Manager
-2. git clone the Unity-Template-0.24.0 located at https://github.com/magicleap/UnityTemplate.git  (Latest commit 9eb927c on Dec 19, 2019)
+2. git clone the Project located at https://github.com/magicallightandsound/SpaceWar.git
 3. Open the Unity Project in Unity 2019.3.4f1  (You may have to use the Unity Hub to install the older Unity Editor v2019.3.4f1)
 4. If you look at the Project Windows, and look at the Assets folder, you will see new folders **SpaceWar** and **Resources**
 5. Click to open the **SpaceWar** folder, then click to open the **Scenes** folder

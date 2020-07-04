@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/SpaceWar/Scenes/planet.unity
+    guid: b4473c772abf37347a5ad0b6927da5e2
+  - enabled: 0
+    path: Assets/Barzoomable/Scenes/Barzoomable.unity
+    guid: b956799f937580044af44df36f257858
+  - enabled: 0
     path: Assets/Scenes/HelloCube.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:

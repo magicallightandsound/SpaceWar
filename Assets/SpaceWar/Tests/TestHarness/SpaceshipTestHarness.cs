@@ -22,43 +22,45 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.MagicLeap;
 
-using MagicalLightAndSound.PhysicsSystem;
-
-[RequireComponent(typeof(Rigidbody))]
-
-public class ActsAsPlanet : MonoBehaviour, IMovableBehavior
+public class SpaceshipTestHarness : MonoBehaviour
 {
-    public float force = 0.33f;
-    public Rigidbody rigidBody;
+    public GameObject spaceShip;
+    public Transform target1;
+    public Transform target2;
 
-    Rotatable rotation;
+    private bool flag = true;
 
-    Rigidbody IMovableBehavior.rigidbody
+    private ActsAsSpaceShip actsAsSpaceShip
     {
-        get { return rigidBody; }
+        get
+        {
+            return spaceShip.GetComponent<ActsAsSpaceShip>();
+        }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        this.rigidBody = GetComponent<Rigidbody>();
-        this.rigidBody.useGravity = false;
-        this.rigidBody.angularDrag = 0;
-
-        this.rotation = new Rotatable(this, new Vector3(0, 1, 0), force);
+        InvokeRepeating("moveSpaceShip", 5.0f, 5.0f);
     }
 
     // Update is called once per frame
     void Update()
     {
+        
     }
 
-    private void FixedUpdate()
+
+    void moveSpaceShip()
     {
-        this.rotation.Perform(force);
+        if (flag)
+        {
+            this.actsAsSpaceShip.navigateTo(target1.position);
+        } else
+        {
+            this.actsAsSpaceShip.navigateTo(target2.position);
+        }
+        flag = !flag;
     }
-
 }
-

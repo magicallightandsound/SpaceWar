@@ -1,4 +1,25 @@
-﻿using System.Collections;
+﻿/*
+Copyright 2020 Rodney Degracia
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to 
+deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
+sell copies of the Software, and to permit persons to whom the Software is 
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,10 +34,15 @@ public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
 {
     public Vector3 targetPosition = Vector3.zero;
     public AnimationCurve animationCurve = new AnimationCurve();
-    public Rigidbody rigidBody;
+    
+    public float thrust = 1.0f;
+    public Movable.Type movableType;
 
+    private Rigidbody rigidBody;
     private ParticleSystem exhaustParticles;
-    private ParticleSystem torpedoExplosionParticles;
+    private BoxCollider boxCollider;
+    private GameObject particleSystemGameObject;
+    private GameObject explosionGameObject;
 
     [HideInInspector]
     public Weapon torpedo;
@@ -35,26 +61,78 @@ public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
     {
         this.rigidBody = GetComponent<Rigidbody>();
 
-        motion = new MagicalLightAndSound.PhysicsSystem.Movable(this, Movable.Type.LinearMotion, targetPosition, Movable.Status.InActive, animationCurve);
-        torpedo = new Weapon(Weapon.Type.Torpedo, Weapon.Status.InActive);
+        this.motion = new MagicalLightAndSound.PhysicsSystem.Movable(
+            this, 
+            movableType,
+            this.transform.position,
+            targetPosition, 
+            Movable.Status.InActive,
+            thrust,
+            animationCurve);
+
+        this.torpedo = new Weapon(Weapon.Type.Torpedo, Weapon.Status.Disarmed);
 
         Exhaust torpedoExhaust = new Exhaust(Exhaust.Type.Torpedo);
-        GameObject goParticleSystem = torpedoExhaust.particleSystem;
-        this.exhaustParticles = goParticleSystem.GetComponent<ParticleSystem>();
+        this.particleSystemGameObject = torpedoExhaust.particleSystem;
+        this.exhaustParticles = particleSystemGameObject.GetComponent<ParticleSystem>();
+        this.exhaustParticles.transform.parent = this.transform;
         Debug.Assert(this.exhaustParticles != null, "exhaustParticles should not be null");
-
-        Explosion torpedoExplosion = new Explosion(Explosion.Type.Large);
-        GameObject goExplosionParticleSystem = torpedoExplosion.particleSystem;
-        this.torpedoExplosionParticles = goExplosionParticleSystem.GetComponent<ParticleSystem>();
-        Debug.Assert(this.torpedoExplosionParticles != null, "torpedoExplosionParticles should not be null");
-
-        GetComponent<BoxCollider>().tag = torpedo.ToString();
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        this.rigidBody.useGravity = false;
+        this.rigidBody.isKinematic = false;
 
+        ///
+        /// Assign a tag to the box collider, therefore making this game object
+        /// able to be recognized as a Torpedo when a collision occurs
+        ///
+        this.boxCollider = GetComponent<BoxCollider>();
+        this.boxCollider.tag = torpedo.ToString();
+        this.boxCollider.isTrigger = true;
+
+    }
+
+    private void OnEnable()
+    {
+        this.exhaustParticles.Play();
+    }
+
+    private void OnDisable()
+    {
+        this.exhaustParticles.Stop();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        switch (torpedo.status)
+        {
+            case Weapon.Status.Dud:
+                return;
+                break;
+            case Weapon.Status.Disarmed:
+                return;
+                break;
+            case Weapon.Status.Armed:
+                {
+                    // Torpedo vs Torpedo destroy each other
+                    if (other.tag == this.boxCollider.tag)
+                    {
+                        this.torpedo.status = Weapon.Status.OKToDestroy;
+                    }
+                }
+                break;
+            case Weapon.Status.Destroyed:
+                return;
+                break;
+            case Weapon.Status.OKToDestroy:
+                return;
+                break;
+            default:
+                break;
+        }
     }
 
     // Update is called once per frame
@@ -62,20 +140,22 @@ public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
     {
         switch (torpedo.status)
         {
-            case Weapon.Status.InActive:
+            case Weapon.Status.Dud:
+            case Weapon.Status.Disarmed:
                 break;
-            case Weapon.Status.Active:
+            case Weapon.Status.Armed:
                 break;
             case Weapon.Status.Destroyed:
+                
                 break;
             case Weapon.Status.OKToDestroy:
                 {
-                    this.torpedoExplosionParticles.Play();
-
-                    motion.status = Movable.Status.InActive;
+                    this.torpedo.status = Weapon.Status.Disarmed;
+                    displayExplosion();
+                    this.gameObject.SetActive(false);
+                    this.gameObject.transform.position = Vector3.zero;
 
                     torpedo.status = Weapon.Status.Destroyed;
-                    Destroy(gameObject, torpedoExplosionParticles.main.duration);
                 }
                 break;
             default:
@@ -83,6 +163,17 @@ public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
         }
 
 
+    }
+
+    private void displayExplosion()
+    {
+        Explosion explosion = ActsAsObjectPool.explosionPool.prototype;
+        this.explosionGameObject = explosion.particleSystem;
+        this.explosionGameObject.transform.position = this.transform.position;
+        ParticleSystem particleSystem = this.explosionGameObject.GetComponent<ParticleSystem>();
+        particleSystem.Play();
+        this.explosionGameObject.SetActive(true);
+        Destroy(explosionGameObject, particleSystem.duration);
     }
 
     private void FixedUpdate()
@@ -91,32 +182,52 @@ public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
         {
             case Movable.Status.Active:
                 {
-                    motion.Perform(animationTime);
-                    animationTime += Time.deltaTime;
-                    Debug.Log("animation time =" + animationTime.ToString());
+                    switch (motion.type)
+                    {
+                        case Movable.Type.LinearMotion:
+                            {
+                                motion.Perform(animationTime);
+                                animationTime += Time.fixedDeltaTime;
+                                Debug.Log("LinearMotion animation time =" + animationTime.ToString());
+
+                                armWhenSafe(animationTime);
+                            }
+                            break;
+                        case Movable.Type.Teleport:
+                            {
+                                motion.Perform(Time.fixedDeltaTime);
+
+                                armWhenSafe(1.0f);
+                            }
+                            break;
+                        case Movable.Type.Newtonian:
+                            {
+                                motion.Perform(animationTime);
+                                animationTime += Time.fixedDeltaTime;
+                                Debug.Log("Newtonian animation time =" + animationTime.ToString());
+
+                                armWhenSafe(animationTime);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
 
                     ///
                     /// Torpedo has reached targetVector without exploding
-                    /// Destory the torpedo without any explosions
+                    /// Destroy the torpedo with an explosion
                     ///
-                    if (animationTime >= 1.0f)
+                    if (animationTime >= 1.0f && this.torpedo.status == Weapon.Status.Armed)
                     {
                         motion.status = Movable.Status.InActive;
-
-                        ///
-                        /// Only destroy a torpedo if it is active
-                        ///
-                        if (torpedo.status == Weapon.Status.Active)
-                        {
-                            torpedo.status = Weapon.Status.OKToDestroy;
-                            Destroy(gameObject);
-                        }
+                        torpedo.status = Weapon.Status.OKToDestroy;
                     }
+
                 }
                 break;
             case Movable.Status.InActive:
                 {
-                    // Don't hide the torpedo when inactive
+                   
                 }
                 break;
             default:
@@ -124,20 +235,56 @@ public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
         }
     }
 
-    public void DeployWeapon(Vector3 targetVector, Dictionary<string, string> parameters)
+    private void armWhenSafe(float animationTime)
     {
-        this.targetPosition = targetVector;
-        this.exhaustParticles.Play();
-        this.torpedo.status = Weapon.Status.Active;
-        this.motion.status = Movable.Status.Active;
+        if (torpedo.status == Weapon.Status.Dud)
+        {
+            return;
+        }
+
+        if (animationTime < 0.25)
+        {
+            return;
+        }
+
+        torpedo.status = Weapon.Status.Armed;
     }
 
-    public void DeployDud(Vector3 targetVector)
+    public void ConfigureWeapon(Vector3 targetVector, Dictionary<string, string> parameters)
     {
         this.targetPosition = targetVector;
-        this.exhaustParticles.Play();
-        this.torpedo.status = Weapon.Status.InActive;
+        this.animationTime = 0;
+        this.motion.source = transform.position;
+        this.motion.target = this.targetPosition;
+        this.motion.type = this.movableType;
+        this.torpedo.status = Weapon.Status.Armed;
         this.motion.status = Movable.Status.Active;
+        this.transform.LookAt(targetVector);
+    }
+
+    public void ConfigureDud(Vector3 targetVector)
+    {
+        this.targetPosition = targetVector;
+        this.animationTime = 0;
+        this.motion.source = transform.position;
+        this.motion.target = this.targetPosition;
+        this.motion.type = this.movableType;
+        this.exhaustParticles.Play();
+        this.torpedo.status = Weapon.Status.Dud;
+        this.motion.status = Movable.Status.Active;
+        this.transform.LookAt(targetVector);
+    }
+
+    public void ConfigureSelfDestruct(Vector3 targetVector)
+    {
+        this.targetPosition = targetVector;
+        this.animationTime = 0;
+        this.motion.source = transform.position;
+        this.motion.target = this.targetPosition;
+        this.motion.type = this.movableType;
+        this.torpedo.status = Weapon.Status.Armed;
+        this.motion.status = Movable.Status.Active;
+        this.transform.LookAt(targetVector);
     }
 }
 
