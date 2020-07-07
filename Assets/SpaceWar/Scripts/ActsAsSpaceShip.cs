@@ -26,11 +26,12 @@ using UnityEngine;
 using MagicalLightAndSound.ParticleSystem;
 using MagicalLightAndSound.CombatSystem;
 using MagicalLightAndSound.PhysicsSystem;
+using MagicalLightAndSound.SpaceWar.PropSystem;
 
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(Rigidbody))]
 
-public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IMovableBehavior
+public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IPhysicalComponents
 {
     public Vector3 targetPosition = Vector3.zero;
     public AnimationCurve animationCurve = new AnimationCurve();
@@ -38,7 +39,9 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IMovableBehavior
     public float thrust = 1.0f;
     public Movable.Type movableType;
 
-    private Rigidbody rigidBody;
+    [HideInInspector]
+    public Rigidbody rigidBody;
+
     private ParticleSystem exhaustParticles;
     private BoxCollider boxCollider;
     private GameObject particleSystemGameObject;
@@ -48,11 +51,14 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IMovableBehavior
     public Vehicle spaceShip;
 
     [HideInInspector]
-    public Movable motion;
+    public Movable linearMotion;
+
+    [HideInInspector]
+    public Rotatable orbitalRotation;
 
     private float animationTime = 0;
 
-    Rigidbody IMovableBehavior.rigidbody
+    Rigidbody IPhysicalComponents.rigidbody
     {
         get { return rigidBody; }
     }
@@ -61,7 +67,7 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IMovableBehavior
     {
         this.rigidBody = GetComponent<Rigidbody>();
 
-        this.motion = new MagicalLightAndSound.PhysicsSystem.Movable(
+        this.linearMotion = new MagicalLightAndSound.PhysicsSystem.Movable(
             this,
             movableType,
             this.transform.position,
@@ -69,6 +75,8 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IMovableBehavior
             Movable.Status.InActive,
             thrust,
             animationCurve);
+
+        this.orbitalRotation = new Rotatable(Rotatable.Type.ExternalBody, this);
 
         this.spaceShip = new Vehicle(Vehicle.Type.SpaceShip, Vehicle.Status.Inactive, 100);
          
@@ -176,29 +184,31 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IMovableBehavior
 
     private void FixedUpdate()
     {
-        switch (motion.status)
+        switch (linearMotion.status)
         {
             case Movable.Status.Active:
                 {
-                    switch (motion.type)
+                    switch (linearMotion.type)
                     {
+                        case Movable.Type.None:
+                            break;
                         case Movable.Type.LinearMotion:
                             {
-                                motion.Perform(animationTime);
+                                linearMotion.Perform(animationTime);
                                 animationTime += Time.fixedDeltaTime;
-                                Debug.Log("LinearMotion animation time =" + animationTime.ToString());
+                                // Debug.Log("LinearMotion animation time =" + animationTime.ToString());
                             }
                             break;
                         case Movable.Type.Teleport:
                             {
-                                motion.Perform(Time.fixedDeltaTime);
+                                linearMotion.Perform(Time.fixedDeltaTime);
                             }
                             break;
                         case Movable.Type.Newtonian:
                             {
-                                motion.Perform(animationTime);
+                                linearMotion.Perform(animationTime);
                                 animationTime += Time.fixedDeltaTime;
-                                Debug.Log("Newtonian animation time =" + animationTime.ToString());
+                                // Debug.Log("Newtonian animation time =" + animationTime.ToString());
                             }
                             break;
                         default:
@@ -213,6 +223,39 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IMovableBehavior
                 break;
             default:
                 break;
+                    
+
+        }
+
+        switch (orbitalRotation.status)
+        {
+            case Rotatable.Status.Active:
+                switch (orbitalRotation.type)
+                {
+                    case Rotatable.Type.None:
+                        break;
+                    case Rotatable.Type.LocalBody:
+                        break;
+                    case Rotatable.Type.ExternalBody:
+                        this.orbitalRotation.Perform(animationTime += Time.fixedDeltaTime);
+                        //this.orbitalRotation.Perform();
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case Rotatable.Status.InActive:
+                break;
+            default:
+                break;
+        }
+
+
+        if (animationTime >= 1.0f)
+        {
+            this.animationTime = 0;
+            this.spaceShip.status = Vehicle.Status.Inactive;
+            this.linearMotion.status = Movable.Status.InActive;
         }
     }
 
@@ -220,11 +263,11 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IMovableBehavior
     {
         this.targetPosition = targetVector;
         this.animationTime = 0;
-        this.motion.source = transform.position;
-        this.motion.target = this.targetPosition;
-        this.motion.type = this.movableType;
+        this.linearMotion.source = transform.position;
+        this.linearMotion.target = this.targetPosition;
+        this.linearMotion.type = this.movableType;
         this.spaceShip.status = Vehicle.Status.Active;
-        this.motion.status = Movable.Status.Active;
+        this.linearMotion.status = Movable.Status.Active;
         this.transform.LookAt(targetVector);
     }
 
@@ -232,12 +275,40 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IMovableBehavior
     {
         this.targetPosition = targetVector;
         this.animationTime = 0;
-        this.motion.source = transform.position;
-        this.motion.target = this.targetPosition;
-        this.motion.type = this.movableType;
+        this.linearMotion.source = transform.position;
+        this.linearMotion.target = this.targetPosition;
+        this.linearMotion.type = this.movableType;
         this.spaceShip.status = Vehicle.Status.Active;
-        this.motion.status = Movable.Status.Active;
+        this.linearMotion.status = Movable.Status.Active;
         this.transform.LookAt(targetVector);
+    }
+
+    public void orbitAroundObstacle(Obstacle obstacle)
+    {
+        this.animationTime = 0;
+        this.spaceShip.status = Vehicle.Status.Active;
+        this.orbitalRotation.status = Rotatable.Status.Active;
+
+        switch (obstacle.type)
+        {
+            case Obstacle.Type.Planet:
+                {
+                    IPhysicalComponents planetPhysicalComponents = obstacle.physicalComponents;
+                  
+                    this.linearMotion.type = Movable.Type.None;
+                    this.orbitalRotation.type = Rotatable.Type.ExternalBody;
+                    this.orbitalRotation.worldOrigin = planetPhysicalComponents.rigidbody.position;
+                    this.orbitalRotation.worldAxis = planetPhysicalComponents.rigidbody.transform.up;
+                    this.orbitalRotation.orbitalAngle = 1f;
+                }
+                break;
+            case Obstacle.Type.Asteroid:
+                break;
+            case Obstacle.Type.Moon:
+                break;
+            default:
+                break;
+        }
     }
 }
 

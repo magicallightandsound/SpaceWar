@@ -28,7 +28,7 @@ namespace MagicalLightAndSound
 {
     namespace PhysicsSystem
     {
-        public interface IMovableBehavior
+        public interface IPhysicalComponents
         {
             Rigidbody rigidbody { get; }
             Transform transform { get; }
@@ -36,28 +36,102 @@ namespace MagicalLightAndSound
 
         public struct Rotatable
         {
-            private Vector3 axis;
-            private float torque;
-            private IMovableBehavior movableBehavior;
+            public enum Status
+            {
+                Active,
+                InActive
+            }
+            public Status status;
+
+            public enum Type
+            {
+                None,
+                LocalBody,
+                ExternalBody
+            }
+            public Type type;
+
+            public Vector3 localAxis;
+            public Vector3 worldAxis;
+            public Vector3 worldOrigin;
+            public float torque;
+            public IPhysicalComponents physicalComponents;
+            public float orbitalAngle;
 
             public Rotatable(
-                IMovableBehavior movableBehavior, 
-                Vector3 axis, 
-                float torque)
+                Type type,
+                IPhysicalComponents physicalComponents
+                )
             {
-                this.movableBehavior = movableBehavior;
-                this.axis = axis;
-                this.torque = torque;
+                this.physicalComponents = physicalComponents;
+                this.localAxis = Vector3.zero;
+                this.torque = 0;
+                this.orbitalAngle = 0;
+                this.type = type;
+                this.worldOrigin = Vector3.zero;
+                this.worldAxis = Vector3.zero;
+                this.status = Status.InActive;
+
+
+                switch (this.type)
+                {
+                    case Type.LocalBody:
+                        this.physicalComponents.rigidbody.isKinematic = false;
+                        break;
+                    case Type.ExternalBody:
+                        this.physicalComponents.rigidbody.isKinematic = false;
+                        break;
+                    default:
+                        break;
+                }
+
+
+            }
+
+            public void Perform(float animationTime)
+            {
+                switch (type)
+                {
+                    case Type.LocalBody:
+                        Debug.Assert(false, "When using Type.LocalBody, use Perform()");
+                        break;
+                    case Type.ExternalBody:
+                        Rigidbody rigidbody = physicalComponents.rigidbody;
+                        Quaternion q = Quaternion.AngleAxis(orbitalAngle , this.worldAxis);
+                        rigidbody.MovePosition((q * (rigidbody.transform.position - this.worldOrigin) + this.worldOrigin));
+                        rigidbody.MoveRotation(rigidbody.transform.rotation * q);
+                        break;
+                    default:
+                        Debug.Assert(false, "Should not assert");
+                        break;
+                }
+                
             }
 
             public void Perform()
             {
-                movableBehavior.rigidbody.AddTorque(axis * torque);
-            }
+                switch (type)
+                {
+                    case Type.LocalBody:
+                        physicalComponents.rigidbody.AddTorque(localAxis * torque);
+                        
+                        break;
+                    case Type.ExternalBody:
 
-            public void Perform(float t)
-            {
-                movableBehavior.rigidbody.AddTorque(axis * t);
+                        float initV = Mathf.Sqrt(100.0f / this.physicalComponents.rigidbody.transform.position.magnitude);
+                        this.physicalComponents.rigidbody.velocity = new Vector3(0 ,0 , initV);
+
+                        Rigidbody rigidbody = physicalComponents.rigidbody;
+                        float r = Vector3.Magnitude(rigidbody.transform.position - this.worldOrigin);
+                        float totalForce = -(1000f) / (r * r);
+                        Vector3 force = (rigidbody.transform.position).normalized * totalForce;
+                        rigidbody.AddForce(force);
+                        break;
+                    default:
+                        Debug.Assert(false, "Should not assert");
+                        break;
+                }
+                
             }
         }
 
@@ -65,6 +139,7 @@ namespace MagicalLightAndSound
         {
             public enum Type
             {
+                None,
                 LinearMotion,
                 Teleport,
                 Newtonian
@@ -91,11 +166,11 @@ namespace MagicalLightAndSound
                 }
             }
 
-            private IMovableBehavior movableBehavior;
+            private IPhysicalComponents movableBehavior;
             private AnimationCurve animationCurve;
 
             public Movable(
-                IMovableBehavior movableBehavior, 
+                IPhysicalComponents movableBehavior, 
                 Movable.Type type,
                 Vector3 source,
                 Vector3 target, 

@@ -69,6 +69,7 @@
     <Compile Include="Assets\SpaceWar\Scripts\ActsAsSpaceShip.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\ActsAsTorpedo.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\CombatSystem.cs" />
+    <Compile Include="Assets\SpaceWar\Scripts\NavigationSystem.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\ParticleSystem.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\Physics.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\PropSystem.cs" />

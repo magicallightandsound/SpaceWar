@@ -25,33 +25,41 @@ using UnityEngine;
 using UnityEngine.XR.MagicLeap;
 
 using MagicalLightAndSound.PhysicsSystem;
-using MagicalLightAndSound.PropSystem;
+using MagicalLightAndSound.SpaceWar.PropSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(SphereCollider))]
 
-public class ActsAsPlanet : MonoBehaviour, IMovableBehavior
+public class ActsAsPlanet : MonoBehaviour, IPhysicalComponents, IPropComponents
 {
     public float force = 0.33f;
     public Rigidbody rigidBody;
     public SphereCollider sphereCollider;
 
     [HideInInspector]
-    public Rotatable rotation;
+    public Rotatable localBodyRotation;
 
     [HideInInspector]
-    public Obstacle planet;
+    public Obstacle obstacle;
 
 
-    Rigidbody IMovableBehavior.rigidbody
+    Rigidbody IPhysicalComponents.rigidbody
     {
         get { return rigidBody; }
     }
 
+    Obstacle IPropComponents.obstacle
+    {
+        get { return obstacle; }
+    }
+
     private void Awake()
     {
-        this.rotation = new Rotatable(this, new Vector3(0, 1, 0), force);
-        this.planet = new Obstacle(Obstacle.Type.Planet);
+        this.localBodyRotation = new Rotatable(Rotatable.Type.LocalBody, this);
+        this.localBodyRotation.localAxis = new Vector3(0, 1, 0);
+        this.localBodyRotation.torque = force;
+
+        this.obstacle = new Obstacle(Obstacle.Type.Planet, this);
     }
 
     // Start is called before the first frame update
@@ -61,7 +69,7 @@ public class ActsAsPlanet : MonoBehaviour, IMovableBehavior
         this.rigidBody.useGravity = false;
         this.rigidBody.angularDrag = 0;
 
-        
+        sphereCollider.tag = Obstacle.Type.Planet.ToString();
     }
 
     // Update is called once per frame
@@ -71,7 +79,7 @@ public class ActsAsPlanet : MonoBehaviour, IMovableBehavior
 
     private void FixedUpdate()
     {
-        this.rotation.Perform(force);
+        this.localBodyRotation.Perform();
     }
 
 }

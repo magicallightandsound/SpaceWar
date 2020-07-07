@@ -19,6 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -107,6 +108,7 @@ namespace MagicalLightAndSound
 
             public enum Type
             {
+                None,
                 Torpedo
             }
 
@@ -172,6 +174,15 @@ namespace MagicalLightAndSound
             {
                 destructible.TakeDamage(DamageAmount);
             }
+
+
+            public static Int32 layerMask
+            {
+                get
+                {
+                    return 0x000A;  // 0000 0000 0000 1010
+                }
+            }
         }
 
         public interface IVehicle
@@ -195,11 +206,11 @@ namespace MagicalLightAndSound
 
             public enum Type
             {
+                None,
                 SpaceShip
             }
 
             private Type type;
-
 
             public GameObject gameObject
             {
@@ -270,6 +281,14 @@ namespace MagicalLightAndSound
                 if (hitPoints <= 0)
                 {
                     status = Status.OKToDestroy;
+                }
+            }
+
+            public static Int32 layerMask
+            {
+                get
+                {
+                    return 0x0009;  // 0000 0000 0000 1001
                 }
             }
         }

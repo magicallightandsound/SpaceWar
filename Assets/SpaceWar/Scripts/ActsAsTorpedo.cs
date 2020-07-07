@@ -30,7 +30,7 @@ using MagicalLightAndSound.PhysicsSystem;
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(Rigidbody))]
 
-public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
+public class ActsAsTorpedo : MonoBehaviour, IDeployable, IPhysicalComponents
 {
     public Vector3 targetPosition = Vector3.zero;
     public AnimationCurve animationCurve = new AnimationCurve();
@@ -52,7 +52,7 @@ public class ActsAsTorpedo : MonoBehaviour, IDeployable, IMovableBehavior
 
     private float animationTime = 0;
 
-    Rigidbody IMovableBehavior.rigidbody
+    Rigidbody IPhysicalComponents.rigidbody
     {
         get { return rigidBody; }
     }

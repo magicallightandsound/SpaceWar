@@ -1,59 +1,99 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using MagicalLightAndSound.PhysicsSystem;
+
 namespace MagicalLightAndSound
 {
-    namespace PropSystem
+    namespace SpaceWar
     {
-        public struct Obstacle
+        namespace PropSystem
         {
-            public enum Type
+            public interface IPropComponents
             {
-                Planet,
-                Asteroid,
-                Moon
+                Obstacle obstacle { get; }
             }
-            public Type type;
 
-            public GameObject gameObject
+            public struct Obstacle
             {
-                get
+                public enum Type
                 {
-                    switch (this.type)
+                    None,
+                    Unknown,
+                    Planet,
+                    Asteroid,
+                    Moon
+                }
+                public Type type;
+
+                public static Obstacle fromGameObject(GameObject gameObject)
+                {
+                    ActsAsPlanet actsAsPlanet = gameObject.GetComponent<ActsAsPlanet>();
+                    if (actsAsPlanet != null)
                     {
-                        case Type.Planet:
-                            {
-                                GameObject go = GameObject.Instantiate(Resources.Load("Obstacles/Planet")) as GameObject;
-                                go.SetActive(false);
+                        Debug.Assert(actsAsPlanet.obstacle.type == Type.Planet, "planet obstacle should be Planet");
+                        return actsAsPlanet.obstacle;
+                    }
+                    Debug.Assert(false, "Should have found a planetary obstacle");
+                    return new Obstacle();
+                }
 
-                                ActsAsPlanet actsAsPlanet = go.GetComponent<ActsAsPlanet>();
-                                actsAsPlanet.planet.type = this.type;
+                public GameObject gameObject
+                {
+                    get
+                    {
+                        switch (this.type)
+                        {
+                            case Type.Planet:
+                                {
+                                    GameObject go = GameObject.Instantiate(Resources.Load("Obstacles/Planet")) as GameObject;
+                                    go.SetActive(false);
 
-                                return go;
-                            }
-                            break;
-                        case Type.Asteroid:
-                            return null;
+                                    ActsAsPlanet actsAsPlanet = go.GetComponent<ActsAsPlanet>();
+                                    actsAsPlanet.obstacle.type = this.type;
+                                     
 
-                        case Type.Moon:
-                            return null;
+                                    return go;
+                                }
 
-                        default:
-                            {
-                                GameObject go = GameObject.Instantiate(Resources.Load("Obstacles/Obstacle")) as GameObject;
-                                go.SetActive(false);
+                            case Type.Asteroid:
+                                return null;
 
-                                return go;
-                            }
+                            case Type.Moon:
+                                return null;
+
+                            default:
+                                {
+                                    GameObject go = GameObject.Instantiate(Resources.Load("Obstacles/Obstacle")) as GameObject;
+                                    go.SetActive(false);
+
+                                    return go;
+                                }
+                        }
+                    }
+                }
+
+                public IPhysicalComponents physicalComponents;
+
+                public Obstacle(Type type, IPhysicalComponents physicalComponents)
+                {
+                    this.type = type;
+                    this.physicalComponents = physicalComponents;
+                }
+
+                public static Int32 layerMask
+                {
+                    get
+                    {
+                        return 0x01 << 0x0008;  // 0000 0000 0000 1000
                     }
                 }
             }
-            public Obstacle(Type type)
-            {
-                this.type = type;
-            }
-        }
 
+        }
     }
+
+
 }

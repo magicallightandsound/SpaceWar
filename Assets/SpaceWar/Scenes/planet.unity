@@ -337,5 +337,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Planet
       objectReference: {fileID: 0}
+    - target: {fileID: 4916793353917522889, guid: a947633f951a5cf418c67232c2cbdf14,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4916793354579183673, guid: a947633f951a5cf418c67232c2cbdf14,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a947633f951a5cf418c67232c2cbdf14, type: 3}
