@@ -235,10 +235,10 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IPhysicalComponents
                     case Rotatable.Type.None:
                         break;
                     case Rotatable.Type.LocalBody:
+                        this.orbitalRotation.Perform(animationTime += Time.fixedDeltaTime);
                         break;
                     case Rotatable.Type.ExternalBody:
                         this.orbitalRotation.Perform(animationTime += Time.fixedDeltaTime);
-                        //this.orbitalRotation.Perform();
                         break;
                     default:
                         break;
@@ -256,6 +256,7 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IPhysicalComponents
             this.animationTime = 0;
             this.spaceShip.status = Vehicle.Status.Inactive;
             this.linearMotion.status = Movable.Status.InActive;
+            
         }
     }
 
@@ -268,6 +269,7 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IPhysicalComponents
         this.linearMotion.type = this.movableType;
         this.spaceShip.status = Vehicle.Status.Active;
         this.linearMotion.status = Movable.Status.Active;
+        this.orbitalRotation.status = Rotatable.Status.InActive;
         this.transform.LookAt(targetVector);
     }
 
@@ -280,14 +282,17 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IPhysicalComponents
         this.linearMotion.type = this.movableType;
         this.spaceShip.status = Vehicle.Status.Active;
         this.linearMotion.status = Movable.Status.Active;
+        this.orbitalRotation.status = Rotatable.Status.InActive;
         this.transform.LookAt(targetVector);
     }
 
-    public void orbitAroundObstacle(Obstacle obstacle)
+    public void orbitAroundObstacle(Obstacle obstacle, Vector3 targetPosition)
     {
         this.animationTime = 0;
         this.spaceShip.status = Vehicle.Status.Active;
         this.orbitalRotation.status = Rotatable.Status.Active;
+        this.linearMotion.status = Movable.Status.InActive;
+        this.targetPosition = targetPosition;
 
         switch (obstacle.type)
         {
@@ -300,6 +305,7 @@ public class ActsAsSpaceShip : MonoBehaviour, IVehicle, IPhysicalComponents
                     this.orbitalRotation.worldOrigin = planetPhysicalComponents.rigidbody.position;
                     this.orbitalRotation.worldAxis = planetPhysicalComponents.rigidbody.transform.up;
                     this.orbitalRotation.orbitalAngle = 1f;
+                    this.orbitalRotation.targetWorldPosition = this.targetPosition;
                 }
                 break;
             case Obstacle.Type.Asteroid:

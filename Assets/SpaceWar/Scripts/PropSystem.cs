@@ -28,18 +28,6 @@ namespace MagicalLightAndSound
                 }
                 public Type type;
 
-                public static Obstacle fromGameObject(GameObject gameObject)
-                {
-                    ActsAsPlanet actsAsPlanet = gameObject.GetComponent<ActsAsPlanet>();
-                    if (actsAsPlanet != null)
-                    {
-                        Debug.Assert(actsAsPlanet.obstacle.type == Type.Planet, "planet obstacle should be Planet");
-                        return actsAsPlanet.obstacle;
-                    }
-                    Debug.Assert(false, "Should have found a planetary obstacle");
-                    return new Obstacle();
-                }
-
                 public GameObject gameObject
                 {
                     get

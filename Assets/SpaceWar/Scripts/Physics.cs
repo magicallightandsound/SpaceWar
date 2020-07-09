@@ -57,6 +57,7 @@ namespace MagicalLightAndSound
             public float torque;
             public IPhysicalComponents physicalComponents;
             public float orbitalAngle;
+            public Vector3 targetWorldPosition;
 
             public Rotatable(
                 Type type,
@@ -71,7 +72,7 @@ namespace MagicalLightAndSound
                 this.worldOrigin = Vector3.zero;
                 this.worldAxis = Vector3.zero;
                 this.status = Status.InActive;
-
+                this.targetWorldPosition = Vector3.zero;
 
                 switch (this.type)
                 {
@@ -93,13 +94,27 @@ namespace MagicalLightAndSound
                 switch (type)
                 {
                     case Type.LocalBody:
-                        Debug.Assert(false, "When using Type.LocalBody, use Perform()");
+                        physicalComponents.rigidbody.AddTorque(localAxis * torque * animationTime);
                         break;
                     case Type.ExternalBody:
                         Rigidbody rigidbody = physicalComponents.rigidbody;
-                        Quaternion q = Quaternion.AngleAxis(orbitalAngle , this.worldAxis);
-                        rigidbody.MovePosition((q * (rigidbody.transform.position - this.worldOrigin) + this.worldOrigin));
-                        rigidbody.MoveRotation(rigidbody.transform.rotation * q);
+                        float orbitRoationSpeed = 1.0f;
+                        float orbitRadius = 2.0f;
+                        float orbitRadiusCorrectionSpeed = 2.0f;
+                        float orbitAlignToDirectionSpeed = 1.0f;
+
+                        Vector3 previousPosition = rigidbody.transform.position;
+
+                        //Movement
+                        rigidbody.transform.RotateAround(worldOrigin, worldAxis, orbitRoationSpeed * Time.deltaTime);
+                        Vector3 orbitDesiredPosition = targetWorldPosition; // (rigidbody.transform.position - worldOrigin).normalized * orbitRadius + worldOrigin;
+                        rigidbody.transform.position = Vector3.Slerp(rigidbody.transform.position, orbitDesiredPosition, Time.deltaTime * orbitRadiusCorrectionSpeed);
+
+                        //Rotation
+                        Vector3 relativePos = rigidbody.transform.position - previousPosition;
+                        Quaternion rotation = Quaternion.LookRotation(relativePos);
+                        rigidbody.transform.rotation = Quaternion.Slerp(rigidbody.transform.rotation, rotation, orbitAlignToDirectionSpeed * Time.deltaTime);
+
                         break;
                     default:
                         Debug.Assert(false, "Should not assert");
@@ -117,9 +132,8 @@ namespace MagicalLightAndSound
                         
                         break;
                     case Type.ExternalBody:
-
-                        float initV = Mathf.Sqrt(100.0f / this.physicalComponents.rigidbody.transform.position.magnitude);
-                        this.physicalComponents.rigidbody.velocity = new Vector3(0 ,0 , initV);
+                        // float initV = Mathf.Sqrt(100.0f / this.physicalComponents.rigidbody.transform.position.magnitude);
+                        // this.physicalComponents.rigidbody.velocity = new Vector3(0 ,0 , initV);
 
                         Rigidbody rigidbody = physicalComponents.rigidbody;
                         float r = Vector3.Magnitude(rigidbody.transform.position - this.worldOrigin);
