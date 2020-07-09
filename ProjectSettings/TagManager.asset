@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Torpedo
   - SpaceShip
+  - Planet
   layers:
   - Default
   - TransparentFX

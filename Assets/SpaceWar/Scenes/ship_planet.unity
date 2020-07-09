@@ -311,6 +311,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Planet
       objectReference: {fileID: 0}
+    - target: {fileID: 4916793353917522889, guid: a947633f951a5cf418c67232c2cbdf14,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4916793353917522889, guid: a947633f951a5cf418c67232c2cbdf14,
+        type: 3}
+      propertyPath: m_TagString
+      value: Planet
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a947633f951a5cf418c67232c2cbdf14, type: 3}
 --- !u!1 &1519368224 stripped
@@ -447,6 +457,46 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SpaceShip
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995936508765564899, guid: 06653ee5106315f43bc9c7dd94653071,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995936508765564909, guid: 06653ee5106315f43bc9c7dd94653071,
+        type: 3}
+      propertyPath: animationCurve.m_Curve.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995936508765564909, guid: 06653ee5106315f43bc9c7dd94653071,
+        type: 3}
+      propertyPath: animationCurve.m_Curve.Array.data[1].time
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995936508765564909, guid: 06653ee5106315f43bc9c7dd94653071,
+        type: 3}
+      propertyPath: animationCurve.m_Curve.Array.data[1].value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995936508765564909, guid: 06653ee5106315f43bc9c7dd94653071,
+        type: 3}
+      propertyPath: animationCurve.m_Curve.Array.data[1].inSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995936508765564909, guid: 06653ee5106315f43bc9c7dd94653071,
+        type: 3}
+      propertyPath: animationCurve.m_Curve.Array.data[1].outSlope
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995936508765564909, guid: 06653ee5106315f43bc9c7dd94653071,
+        type: 3}
+      propertyPath: thrust
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7995936508765564909, guid: 06653ee5106315f43bc9c7dd94653071,
+        type: 3}
+      propertyPath: movableType
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06653ee5106315f43bc9c7dd94653071, type: 3}
