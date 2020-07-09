@@ -330,6 +330,95 @@ namespace MagicalLightAndSound
                 destructible.TakeDamage(DamageAmount);
             }
         }
+
+
+
+        public struct Shield : IDestructible
+        {
+            enum Status
+            {
+                Active,
+                Inactive
+            }
+            Status status;
+
+            enum Type
+            {
+                None,
+                Particle
+            }
+
+            Type type;
+
+            public int ArmorClass
+            {
+                get
+                {
+                    switch (type)
+                    {
+                        case Type.Particle:
+                            return 5;
+
+                        case Type.None:
+                            return 0;
+
+                        default:
+                            return 5;
+                            break;
+                    }
+                }
+            }
+
+            public int hitPoints;
+            public IDestructible destructible;
+
+            Shield(IDestructible destructible, Shield.Type type, Shield.Status status, int hitPoints)
+            {
+                this.type = type;
+                this.hitPoints = hitPoints;
+                this.status = status;
+                this.destructible = destructible;
+            }
+
+            public void TakeDamage(int amount)
+            {
+                if (this.hitPoints <= 0)
+                {
+                    this.status = Status.Inactive;
+                }
+
+                switch (this.status)
+                {
+                    case Status.Active:
+                        this.hitPoints -= ReduceDamage(amount);
+                        destructible.TakeDamage(ReduceDamage(amount));
+                        break;
+                    case Status.Inactive:
+                        destructible.TakeDamage(amount);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            public int ReduceDamage(int amount)
+            {
+                switch (this.status)
+                {
+                    case Status.Active:
+                        return amount - this.ArmorClass;
+
+                    case Status.Inactive:
+                        return amount;
+                        
+                    default:
+                        return amount - this.ArmorClass; ;
+                }
+                
+            }
+        }
+
+
     }
 }
 
