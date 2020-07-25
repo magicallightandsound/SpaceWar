@@ -24,8 +24,58 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.MagicLeap;
 
-public class ActsAsShield : MonoBehaviour
+using MagicalLightAndSound.CombatSystem;
+
+[RequireComponent(typeof(SphereCollider))]
+
+public class ActsAsShield : MonoBehaviour, IDestructible
 {
+    public GameObject shipGameObject;
+
+    private Shield shield;
+
+
+    public ActsAsSpaceShip actsAsSpaceShip
+    {
+        get
+        {
+            return shipGameObject.GetComponent<ActsAsSpaceShip>();
+        }
+    }
+
+    public int ArmorClass
+    {
+        get
+        {
+            switch (this.shield.type)
+            {
+                case Shield.Type.None:
+                    return 0;
+
+                case Shield.Type.ParticleShield:
+                    return 10;
+
+                default:
+                    return 0;
+            }
+        }
+    }
+
+    public int ReduceDamage(int amount)
+    {
+        return amount - this.ArmorClass;
+    }
+
+    public void TakeDamage(int amount)
+    {
+        this.shield.TakeDamage(amount);
+    }
+
+    private void Awake()
+    {
+        this.shield = new Shield(this, Shield.Type.ParticleShield, Shield.Status.Inactive, 100);
+    }
+
     // Start is called before the first frame update
     void Start()
     {

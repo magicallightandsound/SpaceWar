@@ -335,20 +335,20 @@ namespace MagicalLightAndSound
 
         public struct Shield : IDestructible
         {
-            enum Status
+            public enum Status
             {
                 Active,
                 Inactive
             }
-            Status status;
+            public Status status;
 
-            enum Type
+            public enum Type
             {
                 None,
-                Particle
+                ParticleShield
             }
 
-            Type type;
+            public Type type;
 
             public int ArmorClass
             {
@@ -356,7 +356,7 @@ namespace MagicalLightAndSound
                 {
                     switch (type)
                     {
-                        case Type.Particle:
+                        case Type.ParticleShield:
                             return 5;
 
                         case Type.None:
@@ -372,12 +372,17 @@ namespace MagicalLightAndSound
             public int hitPoints;
             public IDestructible destructible;
 
-            Shield(IDestructible destructible, Shield.Type type, Shield.Status status, int hitPoints)
+            public Shield(IDestructible destructible, Shield.Type type, Shield.Status status, int hitPoints)
             {
                 this.type = type;
                 this.hitPoints = hitPoints;
                 this.status = status;
                 this.destructible = destructible;
+            }
+
+            public override string ToString()
+            {
+                return Type.ParticleShield.ToString();
             }
 
             public void TakeDamage(int amount)
