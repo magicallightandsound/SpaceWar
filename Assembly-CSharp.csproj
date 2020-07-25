@@ -62,6 +62,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsController.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsControllerRay.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsCursorHoverable.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsGlobalOrigin.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsHelpScreen.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsManipulatable.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsPickerManipulator.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsSwipeable.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsWorldMesh.cs" />
     <Compile Include="Assets\MagicLeap\Core\Scripts\Input\MLControllerConnectionHandlerBehavior.cs" />
     <Compile Include="Assets\MagicLeap\Core\Scripts\Input\MLInputModuleBehavior.cs" />
     <Compile Include="Assets\MagicLeap\Core\Scripts\Input\MLInputRaycasterBehavior.cs" />
@@ -173,13 +182,16 @@
     <Compile Include="Assets\MagicLeap\Scripts\Utility\LocalizeManager.cs" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\HandMeshing_Overview.txt" />
     <None Include="Assets\MagicLeap\Examples\Streaming\MusicService\Plugins\Lumin\music_manifest.xml" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\MobileApp_Overview.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\MobileApp_Controls.txt" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\Raycast_Overview.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\VideoCapture_Overview.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\WacomTablet_Controls.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\AudioCapture_Overview.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\WorldScale_Overview.txt" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\MagicLeap\Examples\Shaders\WorldVerticalWithFilter.shader" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\Planes_Overview.txt" />
     <None Include="Assets\MagicLeap\Examples\Shaders\UnlitRedToGrayscale.shader" />
@@ -193,6 +205,7 @@
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\HandMeshing_Controls.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\AudioCapture_Controls.txt" />
     <None Include="Assets\Barzoomable\Plugins\websocket-sharp.xml" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\MagicLeap\Examples\Streaming\MusicService\Documentation\Resources\English\MusicService_Overview.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\ImageTracker_Overview.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\Planes_Controls.txt" />
@@ -200,18 +213,26 @@
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\Contacts_Controls.txt" />
     <None Include="Assets\MagicLeap\Examples\Shaders\UnlitAdditiveTransparent.shader" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\Raycast_Controls.txt" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\MagicLeap\Examples\Shaders\DrawingCanvas.shader" />
     <None Include="Assets\MagicLeap\Examples\Streaming\MediaPlayer\Documentation\Resources\English\MediaPlayer_Controls.txt" />
+    <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\MagicLeap\Soundfield\Release Notes.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\LightTracking_Overview.txt" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
+    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\ImageCapture_Overview.txt" />
     <None Include="Assets\MagicLeap\Core\Shaders\StereoVideoRender.shader" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\VideoCapture_Controls.txt" />
     <None Include="Assets\MagicLeap\Examples\Shaders\PointCloud.shader" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\Location_Overview.txt" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\MagicLeap\Examples\Streaming\MediaPlayer\Documentation\Resources\English\MediaPlayer_Overview.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\Meshing_Controls.txt" />
     <None Include="Assets\MagicLeap\Examples\Assets\Models\Controller\Shaders\ControllerDepthMask.shader" />
+    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\MagicLeap\Examples\Shaders\WorldXZWithColor.shader" />
     <None Include="Assets\MagicLeap\README.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\HandTracking_Overview.txt" />
@@ -224,13 +245,19 @@
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\VirtualKeyboard_Controls.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\Location_Controls.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\Meshing_Overview.txt" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\HandTracking_Controls.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\PersistentCoordinateFrames_Overview.txt" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\MagicLeap\Examples\Shaders\PlaneEdge.shader" />
+    <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\PersistentCoordinateFrames_Controls.txt" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\MagicLeap\Examples\Intermediate\Documentation\Resources\English\VirtualKeyboard_Overview.txt" />
     <None Include="Assets\MagicLeap\Examples\Streaming\MusicService\Documentation\Resources\English\MusicService_Controls.txt" />
     <None Include="Assets\MagicLeap\Examples\Shaders\UnlitColorTransparent.shader" />
+    <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
     <Reference Include="Unity.XR.Management">
       <HintPath>C:/Users/Rodney/Documents/MLProjects/SpaceWar.git/trunk/Library/ScriptAssemblies/Unity.XR.Management.dll</HintPath>
     </Reference>
