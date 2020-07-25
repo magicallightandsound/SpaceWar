@@ -71,6 +71,7 @@
     <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsPickerManipulator.cs" />
     <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsSwipeable.cs" />
     <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsWorldMesh.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\Triggerables\ActsAsSceneLoader.cs" />
     <Compile Include="Assets\MagicLeap\Core\Scripts\Input\MLControllerConnectionHandlerBehavior.cs" />
     <Compile Include="Assets\MagicLeap\Core\Scripts\Input\MLInputModuleBehavior.cs" />
     <Compile Include="Assets\MagicLeap\Core\Scripts\Input\MLInputRaycasterBehavior.cs" />
@@ -863,9 +864,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="ActsAsPlanet.csproj">
-      <Project>{F293C089-6677-CFB2-0F14-691C388A8B82}</Project>
-      <Name>ActsAsPlanet</Name>
+    <ProjectReference Include="SpaceWar.csproj">
+      <Project>{428E935A-E1BA-F648-B9BA-81F37C15E139}</Project>
+      <Name>SpaceWar</Name>
     </ProjectReference>
     <ProjectReference Include="LuminUnity.csproj">
       <Project>{F4AA3C08-1595-FD60-BBCD-11F22E538D7D}</Project>

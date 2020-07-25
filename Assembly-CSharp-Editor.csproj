@@ -723,9 +723,9 @@
       <Project>{C9C5ACED-AF37-B251-9AC8-2374AADD4A08}</Project>
       <Name>Assembly-CSharp</Name>
     </ProjectReference>
-    <ProjectReference Include="ActsAsPlanet.csproj">
-      <Project>{F293C089-6677-CFB2-0F14-691C388A8B82}</Project>
-      <Name>ActsAsPlanet</Name>
+    <ProjectReference Include="SpaceWar.csproj">
+      <Project>{428E935A-E1BA-F648-B9BA-81F37C15E139}</Project>
+      <Name>SpaceWar</Name>
     </ProjectReference>
     <ProjectReference Include="LuminUnity.csproj">
       <Project>{F4AA3C08-1595-FD60-BBCD-11F22E538D7D}</Project>

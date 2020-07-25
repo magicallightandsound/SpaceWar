@@ -615,9 +615,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="ActsAsPlanet.csproj">
-      <Project>{F293C089-6677-CFB2-0F14-691C388A8B82}</Project>
-      <Name>ActsAsPlanet</Name>
+    <ProjectReference Include="SpaceWar.csproj">
+      <Project>{428E935A-E1BA-F648-B9BA-81F37C15E139}</Project>
+      <Name>SpaceWar</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

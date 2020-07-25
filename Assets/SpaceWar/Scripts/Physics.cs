@@ -163,7 +163,8 @@ namespace MagicalLightAndSound
                 None,
                 LinearMotion,
                 Teleport,
-                Newtonian
+                Newtonian,
+                Fixed
             }
 
             public enum Status
@@ -218,6 +219,10 @@ namespace MagicalLightAndSound
                     case Type.Newtonian:
                         this.movableBehavior.rigidbody.isKinematic = false;
                         break;
+                    case Type.Fixed:
+                        this.movableBehavior.rigidbody.isKinematic = true;
+                        this.target = this.source;
+                        break;
                     default:
                         break;
                 }
@@ -239,6 +244,10 @@ namespace MagicalLightAndSound
                     case Type.Newtonian:
                         this.movableBehavior.rigidbody.isKinematic = false;
                         movableBehavior.rigidbody.AddForce(direction * thrust * animationCurve.Evaluate(animationTime));
+                        break;
+                    case Type.Fixed:
+                        this.movableBehavior.rigidbody.isKinematic = true;
+                        movableBehavior.rigidbody.MovePosition(target);
                         break;
                     default:
                         break;

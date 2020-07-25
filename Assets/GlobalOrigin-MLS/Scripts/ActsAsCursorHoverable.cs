@@ -31,6 +31,7 @@ namespace MagicalLightAndSound
     public class ActsAsCursorHoverable : MonoBehaviour
     {
         public Color hoverColor = Color.blue;
+        public bool shouldColorChange = true;
 
         [HideInInspector]
         public bool isCursorHovering = false;
@@ -43,6 +44,11 @@ namespace MagicalLightAndSound
         {
             if (MLInput.IsStarted)
             {
+                if (!shouldColorChange)
+                {
+                    return;
+                }
+
                 if (isCursorHovering)
                 {
                     if (!flipflop)

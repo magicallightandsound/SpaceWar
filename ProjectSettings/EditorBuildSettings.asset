@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/SpaceWar/Scenes/company_logo.unity
+    guid: 031b8b0e86996ba4fb86b399dfb53e37
+  - enabled: 1
+    path: Assets/GlobalOrigin-MLS/Scenes/GlobalOrigin.unity
+    guid: 506ed7b4777e96c45aead1dab2416081
+  - enabled: 0
     path: Assets/SpaceWar/Scenes/planet.unity
     guid: b4473c772abf37347a5ad0b6927da5e2
   - enabled: 0

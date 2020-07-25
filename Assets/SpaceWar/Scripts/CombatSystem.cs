@@ -109,7 +109,8 @@ namespace MagicalLightAndSound
             public enum Type
             {
                 None,
-                Torpedo
+                Torpedo,
+                Mine
             }
 
             private Type type;
@@ -125,6 +126,19 @@ namespace MagicalLightAndSound
                                 GameObject go = GameObject.Instantiate(Resources.Load("Weapons/Torpedo")) as GameObject;
                                 go.SetActive(false);
 
+                                ActsAsTorpedo actAsTorpedo = go.GetComponent<ActsAsTorpedo>();
+                                actAsTorpedo.torpedo.type = this.type;
+                                actAsTorpedo.torpedo.status = this.status;
+
+                                return go;
+                            }
+                        case Type.Mine:
+                            {
+                                Debug.Assert(false, "TODO: Create an Mine prefab");
+                                GameObject go = GameObject.Instantiate(Resources.Load("Weapons/Mine")) as GameObject;
+                                go.SetActive(false);
+
+                                Debug.Assert(false, "TODO: Create an ActsAsMine Script");
                                 ActsAsTorpedo actAsTorpedo = go.GetComponent<ActsAsTorpedo>();
                                 actAsTorpedo.torpedo.type = this.type;
                                 actAsTorpedo.torpedo.status = this.status;
@@ -163,7 +177,9 @@ namespace MagicalLightAndSound
                     switch (type)
                     {
                         case Type.Torpedo:
-                            return 100;
+                            return 10;
+                        case Type.Mine:
+                            return 20;
                         default:
                             return 0;
                     }

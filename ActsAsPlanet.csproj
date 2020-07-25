@@ -62,6 +62,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\SpaceWar\Scripts\ActionSystem.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\ActsAsLogo.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\ActsAsObjectPool.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\ActsAsPlanet.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Assets\SpaceWar\Scripts\ParticleSystem.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\Physics.cs" />
     <Compile Include="Assets\SpaceWar\Scripts\PropSystem.cs" />
+    <Compile Include="Assets\SpaceWar\Scripts\Triggerables\ActsAsSceneLoader.cs" />
     <None Include="Assets\SpaceWar\Scripts\ActsAsPlanet.asmdef" />
     <Reference Include="UnityEngine.XR.MagicLeap">
       <HintPath>C:/Users/Rodney/Documents/MLProjects/SpaceWar.git/trunk/Library/ScriptAssemblies/UnityEngine.XR.MagicLeap.dll</HintPath>

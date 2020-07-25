@@ -24,6 +24,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.MagicLeap;
+using UnityEngine.SceneManagement;
 
 namespace MagicalLightAndSound
 {
@@ -260,6 +261,14 @@ namespace MagicalLightAndSound
                 isTriggerDown = true;
                 this.pickedGameObject = this.hoveredGameObject;
                 distanceWhenPicked = Vector3.Distance(transform.position, pickedGameObject.transform.position);
+            }
+
+            ///
+            /// If triggerable, then Triggerdown 
+            ///
+            if (actsAsManiputable.isTriggerable)
+            {
+                actsAsManiputable.OnTrigger(controllerId, triggerValue);
             }
         }
 

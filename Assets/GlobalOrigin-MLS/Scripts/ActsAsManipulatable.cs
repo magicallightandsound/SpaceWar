@@ -42,6 +42,7 @@ namespace MagicalLightAndSound
         public bool isMovable = false;
         public bool isHoverable = false;
         public bool isKinematic = true;
+        public bool isTriggerable = false;
 
         [HideInInspector]
         public bool isBeingMoved = false;
@@ -66,6 +67,9 @@ namespace MagicalLightAndSound
             set => throw new System.NotSupportedException("Use ActsAsHoverable instead");
         }
 
+        public delegate void TriggerDelegate(byte controllerId, float triggerValue);
+        public TriggerDelegate OnTrigger = delegate { };
+
         private void Awake()
         {
             Rigidbody rigidBody = GetComponent<Rigidbody>();
@@ -77,6 +81,10 @@ namespace MagicalLightAndSound
         {
             if (isClonable || isMovable || isHoverable)
             {
+                if (this.gameObject.GetComponent<ActsAsCursorHoverable>())
+                {
+                    return;
+                }
                 this.gameObject.AddComponent<ActsAsCursorHoverable>();
             }
         }

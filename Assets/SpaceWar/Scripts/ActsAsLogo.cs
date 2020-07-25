@@ -44,6 +44,7 @@ public class ActsAsLogo : MonoBehaviour, MagicalLightAndSound.PhysicsSystem.IPhy
     void Start()
     {
         this.rigidbody.useGravity = false;
+        this.rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
     // Update is called once per frame
@@ -56,5 +57,6 @@ public class ActsAsLogo : MonoBehaviour, MagicalLightAndSound.PhysicsSystem.IPhy
     {
         this.rotation.torque = this.torque;
         this.rotation.Perform();
+
     }
 }

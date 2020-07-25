@@ -629,9 +629,9 @@
       <Project>{BAAEB68A-6CEE-5794-7F4F-40273E161236}</Project>
       <Name>Unity.XR.ARSubsystems.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="ActsAsPlanet.csproj">
-      <Project>{41A6B927-67E0-BDAF-E014-AF26B379CED1}</Project>
-      <Name>ActsAsPlanet</Name>
+    <ProjectReference Include="SpaceWar.csproj">
+      <Project>{ED0E10E5-A563-41A5-F682-A35CB53F8423}</Project>
+      <Name>SpaceWar</Name>
     </ProjectReference>
     <ProjectReference Include="Unity.XR.InteractionSubsystems.csproj">
       <Project>{BBCC7F7A-1120-B026-0ABB-EC2184A1638D}</Project>
@@ -687,6 +687,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsController.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsControllerRay.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsCursorHoverable.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsGlobalOrigin.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsHelpScreen.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsManipulatable.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsPickerManipulator.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsSwipeable.cs" />
+    <Compile Include="Assets\GlobalOrigin-MLS\Scripts\ActsAsWorldMesh.cs" />
     <Compile Include="Assets\MagicLeap\Core\Scripts\Input\MLControllerConnectionHandlerBehavior.cs" />
     <Compile Include="Assets\MagicLeap\Core\Scripts\Input\MLInputModuleBehavior.cs" />
     <Compile Include="Assets\MagicLeap\Core\Scripts\Input\MLInputRaycasterBehavior.cs" />
@@ -859,8 +868,26 @@
     <None Include="Assets\MagicLeap\Lumin\LuminUnity.asmdef" />
     <None Include="Assets\MagicLeap\README.txt" />
     <None Include="Assets\MagicLeap\Soundfield\Release Notes.txt" />
-    <None Include="Assets\SpaceWar\Scripts\ActsAsPlanet.asmdef" />
+    <None Include="Assets\SpaceWar\Scripts\SpaceWar.asmdef" />
     <None Include="Assets\SpaceWar\Tests\Tests.asmdef" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_Bitmap.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_SDF.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMP_Sprite.shader" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMPro.cginc" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Resources\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Standard Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryCommon.uss" />
     <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryDark.uss" />
     <None Include="Packages\com.unity.collab-proxy\Editor\Resources\Styles\CollabHistoryLight.uss" />
