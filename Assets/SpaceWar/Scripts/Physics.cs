@@ -65,18 +65,25 @@ namespace MagicalLightAndSound
                 )
             {
                 this.physicalComponents = physicalComponents;
-                this.localAxis = Vector3.zero;
+                this.localAxis = new Vector3(0, 1, 0); // Default Y axis
                 this.torque = 0;
                 this.orbitalAngle = 0;
                 this.type = type;
                 this.worldOrigin = Vector3.zero;
-                this.worldAxis = Vector3.zero;
+                this.worldAxis = new Vector3(0, 1, 0);  // Default Y axis
                 this.status = Status.InActive;
                 this.targetWorldPosition = Vector3.zero;
+
+                Debug.Assert(this.physicalComponents.rigidbody != null,
+                           "Make sure to create the rigidbody before calling the initializer");
 
                 switch (this.type)
                 {
                     case Type.LocalBody:
+                        Debug.Assert(this.physicalComponents != null, 
+                            "this.physicalcomponents should not be null");
+                        Debug.Assert(this.physicalComponents.rigidbody != null, 
+                            "this.physicalcompoenents.rigid body should not be null");
                         this.physicalComponents.rigidbody.isKinematic = false;
                         break;
                     case Type.ExternalBody:
@@ -91,7 +98,7 @@ namespace MagicalLightAndSound
 
             public void Perform(float animationTime)
             {
-                switch (type)
+                switch (this.type)
                 {
                     case Type.LocalBody:
                         physicalComponents.rigidbody.AddTorque(localAxis * torque * animationTime);
@@ -125,7 +132,7 @@ namespace MagicalLightAndSound
 
             public void Perform()
             {
-                switch (type)
+                switch (this.type)
                 {
                     case Type.LocalBody:
                         physicalComponents.rigidbody.AddTorque(localAxis * torque);
@@ -142,7 +149,7 @@ namespace MagicalLightAndSound
                         rigidbody.AddForce(force);
                         break;
                     default:
-                        Debug.Assert(false, "Should not assert");
+                        Debug.Assert(false, "Should not assert" + this.type.ToString());
                         break;
                 }
                 
